@@ -21,7 +21,7 @@ Prices are calculated per fully used minute as described on https://azure.micros
 
 ## Comparison 1: Read, transform and write
 | Data Size | AML Small | AML Medium | AML Hulk | DBX small | DBX medium |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | 1GB | 1 min 33 sec| 1 min 23 sec | 1 min 56 sec| 54 sec | 37.8 sec |
 | 5GB | 7 min 21 sec | 6 min 40 sec | 7 min 24 sec | 3 min 10 sec | 1 min 40 sec |
 | 10GB | failed | 14 min 35 sec | 12 min 40 sec | 3 min 1 sec | 2 min 17 sec |
@@ -61,6 +61,5 @@ The main problem for python and pandas is the one-hot encoding for countries. Th
 | 50GB | failed | failed | 18 min 22 sec | 47 min 56 sec | 20 min 42 sec |
 | 100GB | failed | failed | failed | n/a |  |
 
-- add Hulk
 
 - add prices
