@@ -22,11 +22,19 @@ Prices are calculated per fully used minute as described on https://azure.micros
 ## Comparison 1: Read, transform and write
 | Data Size | AML Small | AML Medium | AML Hulk | DBX small | DBX medium |
 | --- | --- | --- | --- | --- | --- |
-| 1GB | 1 min 33 sec| 1 min 23 sec | 1 min 56 sec| 54 sec | 37.8 sec |
+| 1GB | 1 min 33 sec | 1 min 23 sec | 1 min 56 sec | 54 sec | 37.8 sec |
 | 5GB | 7 min 21 sec | 6 min 40 sec | 7 min 24 sec | 3 min 10 sec | 1 min 40 sec |
 | 10GB | failed | 14 min 35 sec | 12 min 40 sec | 3 min 1 sec | 2 min 17 sec |
 | 50GB | failed | failed | failed | 14 min 24 sec | 8 min 40 sec |
 | 100GB | failed | failed | failed | 29 min | 19 min 6 sec |
+
+| Data Size | AML Small | AML Medium | AML Hulk | DBX small | DBX medium |
+| --- | --- | --- | --- | --- | --- |
+| 1GB | $0.02 | $0.05 | $0.11 | $0.04 | $0.06 |
+| 5GB | $0.14 | $0.30 | $0.77 | $0.12 | $0.06 |
+| 10GB | failed | $0.70 | $1.32 | $0.12 | $0.12 |
+| 50GB | failed | failed | failed | $0.56 | $0.48 |
+| 100GB | failed | failed | failed | $1.16 | $1.14 |
 
 Error message for AML is Kernel died. After some investigation we found that it's not even loading the 50GBs with the standard method provided within AML.
 
@@ -39,6 +47,14 @@ Error message for AML is Kernel died. After some investigation we found that it'
 | 50GB | failed | failed | 10 min 16 sec | 8 min 10 sec | 3 min 56 sec |
 | 100GB | failed | failed | failed | 21 min 2 sec | 8 min 36 sec |
 
+| Data Size | AML Small | AML Medium | AML Hulk | DBX small | DBX medium |
+|---|---|---|---|---|---|
+| 1GB | $0.02 | $0.05 | n/a | $0.04 | $0.06 |
+| 5GB | $0.02 | $0.05 | n/a | $0.04 | $0.06 |
+| 10GB | $0.02 | $0.05 | n/a | $0.04 | $0.06 |
+| 50GB | failed | failed | $1.1 | $0.32 | $0.18 |
+| 100GB | failed | failed | failed | $0.84 | $0.48 |
+
 We have also used pure python on DBX as we see this quite often in reality. Transforming 1GB took 1 minute and 44 seconds and 5GB failed already. The reason is quite simple: As soon as you start to use pure python, e.g. a pandas dataframe, everything gets loaded to the driver and hence isn't distributed anymore. 
 
 ## Comparison 3: Read, create ML model
@@ -50,6 +66,14 @@ We have also used pure python on DBX as we see this quite often in reality. Tran
 | 50GB | failed | failed | failed | 68 min | 33 min 30 sec |
 | 100GB | failed | failed | failed | n/a | 76 min 12 sec |
 
+| Data Size | AML Small | AML Medium | AML Hulk | DBX small | DBX medium |
+|---|---|---|---|---|---|
+| 1GB | failed | $0.15 | $0.22 | $0.08 | $0.18 |
+| 5GB | failed | failed | failed | $0.32 | $0.24 |
+| 10GB | failed | failed | failed | $0.64 | $0.48 |
+| 50GB | failed | failed | failed | $2.72 | $1.98 |
+| 100GB | failed | failed | failed | n/a | $4.56 |
+
 The main problem for python and pandas is the one-hot encoding for countries. This creates a very big but sparse Matrix which is too big to load into memory. For this reason a simpler and less sparse matrix is used to train a model in the next step.
 
 ## Comparison 4: Read, create ML model with less onehot encodings
@@ -59,7 +83,12 @@ The main problem for python and pandas is the one-hot encoding for countries. Th
 | 5GB | 1 min 48 sec | 1 min 54 sec | 1 min 46 sec | 1 min 40 sec | 5 min 24 sec |
 | 10GB | 3 min 30 sec | 4 min | 3 min 16 sec | 11 min 24 sec | 8 min 9 sec |
 | 50GB | failed | failed | 18 min 22 sec | 47 min 56 sec | 20 min 42 sec |
-| 100GB | failed | failed | failed | n/a |  |
+| 100GB | failed | failed | failed | n/a | 48 min 48 sec |
 
-
-- add prices
+| Data Size | AML Small | AML Medium | AML Hulk | DBX small | DBX medium |
+|---|---|---|---|---|---|
+| 1GB | $0.02 | $0.05 | $0.11 | $0.04 | $0.06 |
+| 5GB | $0.02 | $0.05 | $0.11 | $0.04 | $0.30 |
+| 10GB | $0.06 | $0.20 | $0.33 | $0.44 | $0.48 |
+| 50GB | failed | failed | $1.98 | $1.88 | $1.2 |
+| 100GB | failed | failed | failed | n/a | $2.88 |
